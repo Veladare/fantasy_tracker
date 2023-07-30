@@ -58,6 +58,37 @@ async function viewAllDepartments() {
   init();
 }
 
+async function viewAllRoles() {
+  const sql = `
+    SELECT role.id AS role_id, role.title AS job_title, role.salary, department.name AS department_name
+    FROM role
+    LEFT JOIN department ON role.department_id = department.id
+  `;
+  const result = await pool.query(sql)
+  console.table(result[0]);
+  init();
+}
+
+async function viewAllEmployees() {
+  const sql = `SELECT 
+  employee.id AS employee_id,
+  employee.first_name,
+  employee.last_name,
+  role.title AS job_title,
+  department.name AS department_name,
+  role.salary,
+  CONCAT(manager.first_name, ' ', manager.last_name) AS manager_name
+  FROM employee
+  LEFT JOIN role ON employee.role_id = role.id
+  LEFT JOIN department ON role.department_id = department.id
+  LEFT JOIN employee AS manager ON employee.manager_id = manager.id
+  `;
+
+  const result = await pool.query(sql);
+  console.table(result[0]);
+  init();
+}
+
 
 //end
 
