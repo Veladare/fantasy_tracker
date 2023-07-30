@@ -89,6 +89,25 @@ async function viewAllEmployees() {
   init();
 }
 
+async function promptDepartmentName() {
+  return inquirer.prompt([
+    {
+      type: "input",
+      name: "name",
+      message: "Enter a name:"
+    }
+  ]);
+}
+
+async function addDepartment() {
+  const answers = await promptDepartmentName();
+  await pool.query('INSERT INTO department (name) VALUES (?)', [answers.name]);
+  console.log('Department added to the database.');
+init();
+}
+
+
+
 
 //end
 
