@@ -106,6 +106,31 @@ async function addDepartment() {
 init();
 }
 
+// add role function
+
+async function promptRoleDetails() {
+  const [departments] = await pool.query('SELECT * FROM department');
+  const departmentChoices = departments.map(department => ({ name: department.name }))
+  return inquirer.prompt([
+    {
+      type: "input",
+      name: "name",
+      message: "Enter the role name:",
+    },
+    {
+      type: "input",
+      name: "salary",
+      message: "Enter the role salary:",
+    },
+    {
+      type: "list",
+      name: "department",
+      message: "Select a department:",
+      choices: departmentChoices
+    },
+  ]);
+}
+
 async function addRole() {
   const roleDetails = await promptRoleDetails();
   const departmentIdQuery = 'SELECT id FROM department WHERE name = ?';
@@ -118,6 +143,9 @@ async function addRole() {
   console.log('Role added to the database.');
   init();
 }
+
+// add employee function
+
 async function promptEmployeeDetails() {
   const [manager] = await pool.query('SELECT * FROM employee WHERE manager_id IS NOT NULL');
   const [role] = await pool.query('SELECT id, title FROM role')
@@ -167,6 +195,7 @@ async function addEmployee() {
   
   init();
 }
+// update employee function
 async function updateEmployeeRole() {
   const [employees] = await pool.query('SELECT id, first_name, last_name FROM employee');
   const employeeChoices = employees.map(employee => ({ name: `${employee.first_name} ${employee.last_name}`, value: employee.id }));
