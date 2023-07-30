@@ -129,7 +129,24 @@ async function promptRoleDetails() {
     },
   ]);
 }
+async function addEmployee() {
+  const [roles] = await pool.query('SELECT * FROM role');
+  const employeeDetails = await promptEmployeeDetails(roles);
 
+  const sql = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)';
+  const values = [
+    employeeDetails.first_name,
+    employeeDetails.last_name,
+    employeeDetails.role_id,
+    employeeDetails.manager_id,
+  ];
+
+  
+    await pool.query(sql, values);
+    console.log('Employee added to the database.');
+  
+  init();
+}
 async function addRole() {
   const roleDetails = await promptRoleDetails();
   const departmentIdQuery = 'SELECT id FROM department WHERE name = ?';
