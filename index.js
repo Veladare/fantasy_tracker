@@ -159,7 +159,56 @@ async function addRole() {
   console.log('Role added to the database.');
   init();
 }
+async function promptEmployeeDetails() {
+  const [manager] = await pool.query('SELECT * FROM employee WHERE manager_id IS NOT NULL');
+  const [role] = await pool.query('SELECT id, title FROM role')
+  const roleChoices = role.map(role => ({ name: `${role.title}`, value: role.id }));
+  const managerChoices = manager.map(role => ({name: `${role.first_name} ${role.last_name}`,value: role.id }));
 
+  return inquirer.prompt([
+    {
+      type: "input",
+      name: "first_name",
+      message: "Enter the employee's first name:",
+    },
+    {
+      type: "input",
+      name: "last_name",
+      message: "Enter the employee's last name:",
+    },
+    {
+      type: "list",
+      name: "role_id",
+      message: "Select the employee's role:",
+      choices: roleChoices,
+    },
+    {
+      type: "list",
+      name: "manager_id",
+      message: "Enter the employee's manager:",
+      choices: [...managerChoices], 
+    },
+  ]);
+}
+
+async function addEmployee() {
+  const [roles] = await pool.query('SELECT * FROM role');
+  const employeeDetails = await promptEmployeeDetails(roles);
+
+  const sql = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)';
+  const values = [
+    employeeDetails.first_name,
+    employeeDetails.last_name,
+    employeeDetails.role_id,
+    employeeDetails.manager_id,
+  ];
+
+  
+    await pool.query(sql, values);
+    console.log('Employee added to the database.');
+  
+  init();
+}
 
 //end
 
