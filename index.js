@@ -51,6 +51,12 @@ async function init() {
   }
 }
 
+async function viewAllDepartments() {
+  const result = await pool.query('SELECT * FROM department');
+
+  console.table(result[0]); 
+  init();
+}
 
 
 //end
