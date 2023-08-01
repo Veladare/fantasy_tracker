@@ -143,6 +143,7 @@ async function addRole() {
   console.log('Role added to the database.');
   init();
 }
+//end
 
 // add employee function
 
@@ -195,7 +196,10 @@ async function addEmployee() {
   
   init();
 }
+//end
+
 // update employee function
+
 async function updateEmployeeRole() {
   const [employees] = await pool.query('SELECT id, first_name, last_name FROM employee');
   const employeeChoices = employees.map(employee => ({ name: `${employee.first_name} ${employee.last_name}`, value: employee.id }));
